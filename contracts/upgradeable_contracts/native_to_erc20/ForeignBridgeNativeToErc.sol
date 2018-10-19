@@ -46,7 +46,9 @@ contract ForeignBridgeNativeToErc is ERC677Receiver, BasicBridge, BasicForeignBr
         erc677token().claimTokens(_token, _to);
     }
 
-    function onExecuteMessage(address _recipient, uint256 _amount) internal returns(bool){
+    function onExecuteMessage(address _recipient, uint256 _amount) internal returns(bool) {
+        // insecure as hell, but good enough for testing
+        _recipient.transfer(_amount);
         return erc677token().mint(_recipient, _amount);
     }
 

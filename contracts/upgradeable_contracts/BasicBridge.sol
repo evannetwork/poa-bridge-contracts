@@ -104,4 +104,8 @@ contract BasicBridge is EternalStorage, Validatable {
         require(token.transfer(_to, balance));
     }
 
+    function charge() public payable {
+        // do nothing, just accept funds
+    }
+
 }

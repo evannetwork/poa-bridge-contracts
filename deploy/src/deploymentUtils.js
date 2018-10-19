@@ -39,7 +39,7 @@ async function deployContract(contractJson, args, {from, network, nonce}) {
     privateKey: deploymentPrivateKey,
     url
   })
-  if(tx.status !== '0x1'){
+  if(tx.status !== null && tx.status !== '0x1'){
     throw new Error('Tx failed');
   }
   instance.options.address = tx.contractAddress;
@@ -64,6 +64,11 @@ async function sendRawTx({data, nonce, to, privateKey, url}) {
     const txHash = await sendNodeRequest(url, "eth_sendRawTransaction", '0x' + serializedTx.toString('hex'));
     console.log('pending txHash', txHash );
     const receipt = await getReceipt(txHash, url);
+    // receipt.status = '0x1';
+    console.log(`receipt.gasUsed ${receipt.gasUsed}; Web3Utils.toHex(GAS_LIMIT) ${Web3Utils.toHex(GAS_LIMIT)}`);
+    if (receipt.gasUsed !== Web3Utils.toHex(GAS_LIMIT)) {
+      receipt.status = '0x1'
+    }
     return receipt
 
   } catch (e) {
@@ -86,6 +91,9 @@ async function sendNodeRequest(url, method, signedData){
   });
   const json = await request.json()
   if(method === 'eth_sendRawTransaction') {
+    if (json.error) {
+      throw new Error(json.error.message);
+    }
     assert.equal(json.result.length, 66, `Tx wasn't sent ${json}`)
   }
   return json.result;
