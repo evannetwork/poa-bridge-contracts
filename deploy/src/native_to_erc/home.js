@@ -25,6 +25,7 @@ const {
   HOME_MAX_AMOUNT_PER_TX,
   HOME_MIN_AMOUNT_PER_TX,
   HOME_REQUIRED_BLOCK_CONFIRMATIONS,
+  HOME_TICKET_VENDOR,
 } = process.env;
 
 const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVATE_KEY)
@@ -115,7 +116,7 @@ async function deployHome()
   `)
   homeBridgeImplementation.options.address = homeBridgeStorage.options.address
   const initializeHomeBridgeData = await homeBridgeImplementation.methods.initialize(
-    storageValidatorsHome.options.address, HOME_DAILY_LIMIT, HOME_MAX_AMOUNT_PER_TX, HOME_MIN_AMOUNT_PER_TX, HOME_GAS_PRICE, HOME_REQUIRED_BLOCK_CONFIRMATIONS
+    storageValidatorsHome.options.address, HOME_DAILY_LIMIT, HOME_MAX_AMOUNT_PER_TX, HOME_MIN_AMOUNT_PER_TX, HOME_GAS_PRICE, HOME_REQUIRED_BLOCK_CONFIRMATIONS, HOME_TICKET_VENDOR
   ).encodeABI({from: DEPLOYMENT_ACCOUNT_ADDRESS});
   const txInitializeHomeBridge = await sendRawTx({
     data: initializeHomeBridgeData,
