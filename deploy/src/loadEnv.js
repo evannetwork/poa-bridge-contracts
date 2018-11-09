@@ -50,6 +50,7 @@ let validations = {
   FOREIGN_REQUIRED_BLOCK_CONFIRMATIONS: envalid.num(),
   FOREIGN_GAS_PRICE: bigNumValidator(),
   REQUIRED_NUMBER_OF_VALIDATORS: envalid.num(),
+  HOME_TICKET_VENDOR: addressesValidator(),
   VALIDATORS: addressesValidator()
 }
 
