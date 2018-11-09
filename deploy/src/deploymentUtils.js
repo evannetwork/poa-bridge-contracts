@@ -46,13 +46,8 @@ async function deployContract(contractJson, args, { from, network, nonce }) {
     url,
     gasPrice: gasPrice
   })
-<<<<<<< HEAD
-  if(tx.status !== null && tx.status !== '0x1'){
-    throw new Error('Tx failed');
-=======
   if (tx.status !== '0x1') {
     throw new Error('Tx failed')
->>>>>>> d2d6903200eb1b7798da3baac348fd094cc34588
   }
   instance.options.address = tx.contractAddress
   instance.deployedBlockNumber = tx.blockNumber
