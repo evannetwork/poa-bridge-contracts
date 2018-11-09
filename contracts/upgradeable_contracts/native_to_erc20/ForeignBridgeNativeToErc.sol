@@ -42,13 +42,19 @@ contract ForeignBridgeNativeToErc is ERC677Receiver, BasicBridge, BasicForeignBr
         return bytes4(keccak256(abi.encodePacked("native-to-erc-core")));
     }
 
+    function claimFunds(address _to) external onlyOwner {
+        _to.transfer(this.balance);
+    }
+
     function claimTokensFromErc677(address _token, address _to) external onlyOwner {
         erc677token().claimTokens(_token, _to);
     }
 
     function onExecuteMessage(address _recipient, uint256 _amount) internal returns(bool) {
+        // do not mint tokens, as native currency is used
+        // return erc677token().mint(_recipient, _amount);
         _recipient.transfer(_amount);
-        return erc677token().mint(_recipient, _amount);
+        return true;
     }
 
     function fireEventOnTokenTransfer(address _from, uint256 _value) internal {
