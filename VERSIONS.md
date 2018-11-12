@@ -8,6 +8,9 @@
     * remove `setMinValue`, `getMinValue`
   + use `eveWeiPerEther` for price related info (read as "EVE Wei" per "(mainnet) Ether")
 - add max age for tickets in foreign bridge
+- update balance handling functions
+  + move functions for handling balance to `BasicBridge`
+  + rename `charge()` to `chargeFunds()` to keep names consistent
 
 ### Fixes
 ### Deprecations
