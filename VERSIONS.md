@@ -7,6 +7,7 @@
     * remove `consumeTicket`
     * remove `setMinValue`, `getMinValue`
   + use `eveWeiPerEther` for price related info (read as "EVE Wei" per "(mainnet) Ether")
+- add max age for tickets in foreign bridge
 
 ### Fixes
 ### Deprecations

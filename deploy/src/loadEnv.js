@@ -51,6 +51,7 @@ let validations = {
   FOREIGN_GAS_PRICE: bigNumValidator(),
   REQUIRED_NUMBER_OF_VALIDATORS: envalid.num(),
   HOME_TICKET_VENDOR: addressesValidator(),
+  HOME_TICKET_MAX_AGE: bigNumValidator(),
   VALIDATORS: addressesValidator()
 }
 
