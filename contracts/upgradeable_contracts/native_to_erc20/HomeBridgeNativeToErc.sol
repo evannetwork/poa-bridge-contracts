@@ -55,14 +55,12 @@ contract HomeBridgeNativeToErc is EternalStorage, BasicBridge, BasicHomeBridge {
         require(withinLimit(msg.value));
         setTotalSpentPerDay(getCurrentDay(), totalSpentPerDay(getCurrentDay()).add(msg.value));
         TicketVendorInterface tv = TicketVendorInterface(addressStorage[keccak256(abi.encodePacked("ticketVendor"))]);
-        // address owner, uint256 price, uint256 issued, uint256 value
         var ( ticketOwner, ticketPrice, ticketIssued, ticketValue ) = tv.getTicketInfo(ticketId);
         require(msg.sender == ticketOwner);
         require(msg.value == ticketValue);
         require(ticketIssued + getTicketMaxAge() >= now);
         uint256 foreignFunds = ticketValue * ticketPrice / (1 ether);
-        bytes32 transferKey = keccak256(abi.encodePacked(bytes32(msg.sender), bytes32(foreignFunds)));
-        uintStorage[keccak256(abi.encodePacked("ticketTransferKeyToId", transferKey))] = ticketId;
+        setTicketProcessed(ticketId);
         emit UserRequestForSignature(msg.sender, foreignFunds);
     }
 
@@ -78,17 +76,16 @@ contract HomeBridgeNativeToErc is EternalStorage, BasicBridge, BasicHomeBridge {
         return bytes4(keccak256(abi.encodePacked("native-to-erc-core")));
     }
 
-    function getTicketId(address sender, uint256 value) public view returns(uint256) {
-        bytes32 transferKey = keccak256(abi.encodePacked(bytes32(sender), bytes32(value)));
-        return uintStorage[keccak256(abi.encodePacked("ticketTransferKeyToId", transferKey))];
+    function getTicketMaxAge() public view returns(uint256) {
+        return uintStorage[keccak256(abi.encodePacked("ticketMaxAge"))];
+    }
+
+    function getTicketProcessed(uint256 ticketId) public view returns(bool) {
+        return boolStorage[keccak256(abi.encodePacked("ticketProcessed", ticketId))];
     }
 
     function getTicketVendor() public view returns(address) {
         return addressStorage[keccak256(abi.encodePacked("ticketVendor"))];
-    }
-
-    function getTicketMaxAge() public view returns(uint256) {
-        return uintStorage[keccak256(abi.encodePacked("ticketMaxAge"))];
     }
 
     function onExecuteAffirmation(address _recipient, uint256 _value) internal returns(bool) {
@@ -96,5 +93,9 @@ contract HomeBridgeNativeToErc is EternalStorage, BasicBridge, BasicHomeBridge {
             (new Sacrifice).value(_value)(_recipient);
         }
         return true;
+    }
+
+    function setTicketProcessed(uint256 ticketId) internal {
+        boolStorage[keccak256(abi.encodePacked("ticketProcessed", ticketId))] = true;
     }
 }
