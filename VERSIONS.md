@@ -11,6 +11,9 @@
 - update balance handling functions
   + move functions for handling balance to `BasicBridge`
   + rename `charge()` to `chargeFunds()` to keep names consistent
+- add ticket processing for home bridge
+  + tickets are processed by ticket vendor and ticket id
+  + the same ticket id from the same ticket vendor contract cannot be used a second time
 
 ### Fixes
 ### Deprecations

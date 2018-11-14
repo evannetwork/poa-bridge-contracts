@@ -81,7 +81,8 @@ contract HomeBridgeNativeToErc is EternalStorage, BasicBridge, BasicHomeBridge {
     }
 
     function getTicketProcessed(uint256 ticketId) public view returns(bool) {
-        return boolStorage[keccak256(abi.encodePacked("ticketProcessed", ticketId))];
+        bytes32 key = keccak256(abi.encodePacked("ticketProcessed", getTicketVendor(), ticketId));
+        return boolStorage[key];
     }
 
     function getTicketVendor() public view returns(address) {
@@ -96,6 +97,7 @@ contract HomeBridgeNativeToErc is EternalStorage, BasicBridge, BasicHomeBridge {
     }
 
     function setTicketProcessed(uint256 ticketId) internal {
-        boolStorage[keccak256(abi.encodePacked("ticketProcessed", ticketId))] = true;
+        bytes32 key = keccak256(abi.encodePacked("ticketProcessed", getTicketVendor(), ticketId));
+        boolStorage[key] = true;
     }
 }
