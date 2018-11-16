@@ -50,7 +50,8 @@ contract HomeBridgeNativeToErc is EternalStorage, BasicBridge, BasicHomeBridge {
         throw;
     }
 
-    function transferFunds(uint256 ticketId) public payable {
+    function transferFunds(uint256 ticketId, address targetAccount) public payable {
+        require(address(targetAccount) != address(0));
         require(msg.value > 0);
         require(withinLimit(msg.value));
         setTotalSpentPerDay(getCurrentDay(), totalSpentPerDay(getCurrentDay()).add(msg.value));
@@ -61,7 +62,7 @@ contract HomeBridgeNativeToErc is EternalStorage, BasicBridge, BasicHomeBridge {
         require(ticketIssued + getTicketMaxAge() >= now);
         uint256 foreignFunds = ticketValue * ticketPrice / (1 ether);
         setTicketProcessed(ticketId);
-        emit UserRequestForSignature(msg.sender, foreignFunds);
+        emit UserRequestForSignature(targetAccount, foreignFunds);
     }
 
     function setTicketMaxAge(uint ticketMaxAge) public onlyOwner {
