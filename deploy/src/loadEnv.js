@@ -7,7 +7,7 @@ const envalid = require('envalid')
 const { ZERO_ADDRESS } = require('./constants')
 
 // Validations and constants
-const validBridgeModes = ['NATIVE_TO_ERC', 'ERC_TO_ERC', 'ERC_TO_NATIVE']
+const validBridgeModes = ['NATIVE_TO_ERC', 'ERC_TO_ERC', 'ERC_TO_NATIVE', 'NATIVE_TO_NATIVE']
 const bigNumValidator = envalid.makeValidator(x => toBN(x))
 const validateAddress = address => {
   if (isAddress(address)) {
@@ -50,8 +50,8 @@ let validations = {
   FOREIGN_REQUIRED_BLOCK_CONFIRMATIONS: envalid.num(),
   FOREIGN_GAS_PRICE: bigNumValidator(),
   REQUIRED_NUMBER_OF_VALIDATORS: envalid.num(),
-  HOME_TICKET_VENDOR: addressesValidator(),
-  HOME_TICKET_MAX_AGE: bigNumValidator(),
+  FOREIGN_TICKET_VENDOR: addressesValidator(),
+  FOREIGN_TICKET_MAX_AGE: bigNumValidator(),
   VALIDATORS: addressesValidator()
 }
 
@@ -82,6 +82,18 @@ if (BRIDGE_MODE === 'ERC_TO_NATIVE') {
     BLOCK_REWARD_ADDRESS: addressValidator({
       default: ZERO_ADDRESS
     })
+  }
+}
+
+if (BRIDGE_MODE === 'NATIVE_TO_NATIVE') {
+  validations = {
+    ...validations,
+    BLOCK_REWARD_ADDRESS: addressValidator({
+      default: ZERO_ADDRESS
+    }),
+    FOREIGN_DAILY_LIMIT: bigNumValidator(),
+    FOREIGN_MAX_AMOUNT_PER_TX: bigNumValidator(),
+    FOREIGN_MIN_AMOUNT_PER_TX: bigNumValidator()
   }
 }
 
