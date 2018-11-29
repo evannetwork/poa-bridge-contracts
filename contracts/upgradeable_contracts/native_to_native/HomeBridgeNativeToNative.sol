@@ -57,8 +57,11 @@ contract HomeBridgeNativeToNative is EternalStorage, BasicBridge, BasicHomeBridg
 
     function onExecuteAffirmation(address _recipient, uint256 _value) internal returns(bool) {
         IBlockReward blockReward = blockRewardContract();
-        require(blockReward != address(0));
-        blockReward.addExtraReceiver(_value, _recipient);
+        if (blockReward != address(0)) {
+            blockReward.addExtraReceiver(_value, _recipient);
+        } else {
+            _recipient.transfer(_value);
+        }
         return true;
     }
 

@@ -15,6 +15,7 @@
   + tickets are processed by ticket vendor and ticket id
   + the same ticket id from the same ticket vendor contract cannot be used a second time
 - add `targetAccount` argument to `transferFunds` in home bridge to allow sending funds to a specific account in the foreign chain
+- native to native `HomeBridgeNativeToNative` now sends funds from its own balance to `_recipient` if `blockRewardContract` is unset
 
 ### Fixes
 ### Deprecations
