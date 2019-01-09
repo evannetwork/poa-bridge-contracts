@@ -42,6 +42,41 @@ async function deployNativeToErc() {
   console.log('Contracts Deployment have been saved to `bridgeDeploymentResults.json`')
 }
 
+async function deployNativeToNative() {
+  const deployHome = require('./src/native_to_native/home')
+  const deployForeign = require('./src/native_to_native/foreign')
+
+  const { homeBridge } = await deployHome()
+  const { foreignBridge } = await deployForeign()
+  console.log('\nDeployment has been completed.\n\n')
+  console.log(
+    `[ Home ] HomeBridge: ${homeBridge.address} at block ${
+      homeBridge.deployedBlockNumber
+    }`
+  )
+  console.log(
+    `[ Foreign ] ForeignBridge: ${foreignBridge.address} at block ${
+      foreignBridge.deployedBlockNumber
+    }`
+  )
+  fs.writeFileSync(
+    deployResultsPath,
+    JSON.stringify(
+      {
+        homeBridge: {
+          ...homeBridge
+        },
+        foreignBridge: {
+          ...foreignBridge
+        }
+      },
+      null,
+      4
+    )
+  )
+  console.log('Contracts Deployment have been saved to `bridgeDeploymentResults.json`')
+}
+
 async function deployErcToErc() {
   const deployHome = require('./src/erc_to_erc/home')
   const deployForeign = require('./src/erc_to_erc/foreign')
@@ -122,6 +157,9 @@ async function main() {
       break
     case 'ERC_TO_NATIVE':
       await deployErcToNative()
+      break
+    case 'NATIVE_TO_NATIVE':
+      await deployNativeToNative()
       break
     default:
       console.log(BRIDGE_MODE)
