@@ -17,7 +17,8 @@ contract ForeignBridgeNativeToNative is  BasicBridge, BasicForeignBridge {
         uint256 _foreignGasPrice,
         uint256 _requiredBlockConfirmations,
         address _ticketVendor,
-        uint256 ticketMaxAge
+        uint256 _ticketMaxAge,
+        address _fundStorage
     ) public returns(bool) {
         require(!isInitialized());
         require(_validatorContract != address(0) && isContract(_validatorContract));
@@ -31,7 +32,8 @@ contract ForeignBridgeNativeToNative is  BasicBridge, BasicForeignBridge {
         uintStorage[keccak256(abi.encodePacked("gasPrice"))] = _foreignGasPrice;
         uintStorage[keccak256(abi.encodePacked("requiredBlockConfirmations"))] = _requiredBlockConfirmations;
         addressStorage[keccak256(abi.encodePacked("ticketVendor"))] = _ticketVendor;
-        uintStorage[keccak256(abi.encodePacked("ticketMaxAge"))] = ticketMaxAge;
+        uintStorage[keccak256(abi.encodePacked("ticketMaxAge"))] = _ticketMaxAge;
+        addressStorage[keccak256(abi.encodePacked("fundStorage"))] = _fundStorage;
         setInitialize(true);
         return isInitialized();
     }
@@ -53,6 +55,11 @@ contract ForeignBridgeNativeToNative is  BasicBridge, BasicForeignBridge {
         require(ticketIssued + getTicketMaxAge() >= now);
         uint256 foreignFunds = ticketValue * ticketPrice / (1 ether);
         setTicketProcessed(ticketId);
+        // send to target account
+        address to = fundStorage();
+        if (to != address(0)) {
+            to.transfer(msg.value);
+        }
         emit UserRequestForAffirmation(targetAccount, foreignFunds);
     }
 

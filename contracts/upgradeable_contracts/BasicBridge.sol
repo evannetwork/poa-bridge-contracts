@@ -93,6 +93,14 @@ contract BasicBridge is EternalStorage, Validatable {
         return dailyLimit() >= nextLimit && _amount <= maxPerTx() && _amount >= minPerTx();
     }
 
+    function setFundStorage(address _fundStorage) public onlyOwner {
+        addressStorage[keccak256(abi.encodePacked("fundStorage"))] = _fundStorage;
+    }
+
+    function fundStorage() public view returns(address) {
+        return address(addressStorage[keccak256(abi.encodePacked("fundStorage"))]);
+    }
+
     function claimTokens(address _token, address _to) public onlyOwner {
         require(_to != address(0));
         if (_token == address(0)) {
@@ -105,8 +113,11 @@ contract BasicBridge is EternalStorage, Validatable {
         require(token.transfer(_to, balance));
     }
 
-    function claimFunds(address _to) public onlyOwner {
-        _to.transfer(this.balance);
+    function claimFunds() public {
+        address to = fundStorage();
+        require(to != address(0));
+        require(to == msg.sender);
+        to.transfer(this.balance);
     }
 
     function chargeFunds() public payable {
