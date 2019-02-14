@@ -53,14 +53,14 @@ contract ForeignBridgeNativeToNative is  BasicBridge, BasicForeignBridge {
         require(msg.sender == ticketOwner);
         require(msg.value == ticketValue);
         require(ticketIssued + getTicketMaxAge() >= now);
-        uint256 foreignFunds = ticketValue * ticketPrice / (1 ether);
+        uint256 homeFunds = ticketValue * ticketPrice / (1 ether);
         setTicketProcessed(ticketId);
         // send to target account
         address to = fundStorage();
         if (to != address(0)) {
             to.transfer(msg.value);
         }
-        emit UserRequestForAffirmation(targetAccount, foreignFunds);
+        emit UserRequestForAffirmation(targetAccount, homeFunds);
     }
 
     function setTicketMaxAge(uint ticketMaxAge) public onlyOwner {
