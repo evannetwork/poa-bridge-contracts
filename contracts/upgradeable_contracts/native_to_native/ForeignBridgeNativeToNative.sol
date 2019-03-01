@@ -43,7 +43,7 @@ contract ForeignBridgeNativeToNative is  BasicBridge, BasicForeignBridge {
         throw;
     }
 
-    function transferFunds(uint256 ticketId, address targetAccount) public payable {
+    function transferFunds(uint256 ticketId, address targetAccount, uint256 value) public payable {
         require(address(targetAccount) != address(0));
         require(msg.value > 0);
         require(withinLimit(msg.value));
@@ -54,6 +54,9 @@ contract ForeignBridgeNativeToNative is  BasicBridge, BasicForeignBridge {
         require(msg.value == ticketValue);
         require(ticketIssued + getTicketMaxAge() >= now);
         uint256 homeFunds = ticketValue * ticketPrice / (1 ether);
+        if (value > 0 && value < homeFunds) {
+            homeFunds = value;
+        }
         setTicketProcessed(ticketId);
         // send to target account
         address to = fundStorage();
