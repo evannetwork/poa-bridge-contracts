@@ -2,3 +2,5 @@ node_modules
 build
 flats
 .node*
+deploy/yarn.lock
+yarn.lock
